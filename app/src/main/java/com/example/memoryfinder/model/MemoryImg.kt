@@ -7,6 +7,11 @@ data class MemoryImg (
         val name: String,
         val photographer : String,
         val image: String
-        ):Parcelable
+        ):Parcelable {
+
+        override fun toString(): String {
+                return "$name - $photographer"
+        }
+        }
 
 
