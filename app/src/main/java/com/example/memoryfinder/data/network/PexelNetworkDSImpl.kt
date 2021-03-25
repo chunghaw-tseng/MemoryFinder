@@ -14,12 +14,22 @@ class PexelNetworkDSImpl(
     override val downloadedCurrentMemories: LiveData<PexelsResults>
         get() = _downloadedCurrentMemories
 
-    override suspend fun fetchImages(keyword: String, per_page: String, locale: String) {
+    override suspend fun fetchImages(keyword: String, per_page: String, locale: String, page: String) {
         try{
-            val fetchImages = pexelsApiService.getPhotos(keyword, per_page, locale)
+            val fetchImages = pexelsApiService.getPhotos(keyword, per_page, locale, page)
             _downloadedCurrentMemories.postValue(fetchImages)
         }catch (e: NoConnectionException){
             Log.e("Connectivity", "No connection found", e)
         }
     }
+
+    override suspend fun fetchCuratedImages(per_page: String, page: String) {
+        try{
+            val fetchImages = pexelsApiService.getCuratedPhotos(per_page, page)
+            _downloadedCurrentMemories.postValue(fetchImages)
+        }catch (e: NoConnectionException){
+            Log.e("Connectivity", "No connection found", e)
+        }
+    }
+
 }

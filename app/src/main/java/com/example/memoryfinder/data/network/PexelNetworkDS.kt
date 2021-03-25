@@ -9,7 +9,12 @@ interface PexelNetworkDS {
     suspend fun fetchImages(
         keyword: String,
         per_page: String = "50",
-        locale: String = "en-US"
+        locale: String = "en-US",
+        page : String
     )
+
+    suspend fun fetchCuratedImages(
+        per_page: String = "50",
+        page:String )
 
 }

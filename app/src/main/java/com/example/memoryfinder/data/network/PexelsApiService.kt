@@ -20,7 +20,8 @@ interface PexelsApiService {
     suspend fun getPhotos(
         @Query(value = "query") keyword : String,
         @Query(value = "per_page") perPage : String = "50",
-        @Query(value = "locale") locale : String = "en-US"
+        @Query(value = "locale") locale : String = "en-US",
+        @Query(value = "page") page : String = "1"
     ): PexelsResults
 
     @GET(value = "curated")

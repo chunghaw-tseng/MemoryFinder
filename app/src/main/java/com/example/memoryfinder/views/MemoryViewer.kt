@@ -2,6 +2,7 @@ package com.example.memoryfinder.views
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment) {
     }
 
     private lateinit var viewModel: MemoryViewerViewModel
+    private val TAG:String = "MainFragment"
 
     private var _binding: MemoryViewerFragmentBinding? = null
     private val binding get() = _binding!!
@@ -54,7 +56,7 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment) {
         val dataSource = PexelNetworkDSImpl(apiService)
 
         dataSource.downloadedCurrentMemories.observe(viewLifecycleOwner, Observer {
-            binding.resultText.text = it.toString()
+            Log.d(TAG, it.toString())
         })
 
         GlobalScope.launch(Dispatchers.Main) {
