@@ -1,11 +1,9 @@
-package com.example.memoryfinder.data
+package com.example.memoryfinder.data.network
 
 import android.util.Log
 import com.example.memoryfinder.data.model.PexelsResults
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -32,13 +30,18 @@ interface PexelsApiService {
     ) : PexelsResults
 
     companion object{
-        operator fun invoke(): PexelsApiService {
+        operator fun invoke(
+            connectivityInterceptor: Connectivity
+        ): PexelsApiService {
             val requestInterceptor = Interceptor{ chain ->
                 val new_request = chain.request()
                     .newBuilder().addHeader("Authorization", API_KEY).build()
                 return@Interceptor chain.proceed(new_request)
             }
-            val httpClient = OkHttpClient.Builder().addInterceptor(requestInterceptor).build()
+            val httpClient = OkHttpClient.Builder()
+                .addInterceptor(requestInterceptor)
+                .addInterceptor(connectivityInterceptor)
+                .build()
             Log.d("API", "Adding interceptor");
             return Retrofit.Builder().client(httpClient).baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create()).build().create(PexelsApiService :: class.java)
