@@ -1,6 +1,9 @@
 package com.example.memoryfinder.data.model
 
-data class Src(
+
+import com.google.gson.annotations.SerializedName
+
+data class SrcX(
     val landscape: String,
     val large: String,
     val large2x: String,
