@@ -9,28 +9,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.example.memoryfinder.R
-import com.example.memoryfinder.data.network.ConnectivityImpl
-import com.example.memoryfinder.data.network.PexelNetworkDS
-import com.example.memoryfinder.data.network.PexelNetworkDSImpl
-import com.example.memoryfinder.data.network.PexelsApiService
 import com.example.memoryfinder.databinding.MemoryViewerFragmentBinding
+import com.example.memoryfinder.modelviews.MemoryViewerModelFactory
 import com.example.memoryfinder.modelviews.MemoryViewerViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
+import kotlin.coroutines.CoroutineContext
 
-class MemoryViewer : Fragment(R.layout.memory_viewer_fragment) {
+class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, CoroutineScope {
 
-    companion object {
-        fun newInstance() = MemoryViewer()
-    }
+    override val di by closestDI()
+    private val memoryViewerModelFactory : MemoryViewerModelFactory by instance()
+    private var job = Job()
 
     private lateinit var viewModel: MemoryViewerViewModel
     private val TAG:String = "MainFragment"
-
     private var _binding: MemoryViewerFragmentBinding? = null
     private val binding get() = _binding!!
 
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        job = Job()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +47,11 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment) {
         return view
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -49,20 +59,25 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MemoryViewerViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProvider(this, memoryViewerModelFactory)
+            .get(MemoryViewerViewModel::class.java)
 
-        val apiService = PexelsApiService(ConnectivityImpl(this.requireContext()))
-        val dataSource = PexelNetworkDSImpl(apiService)
+        bindUI()
 
-        dataSource.downloadedCurrentMemories.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, it.toString())
-        })
 
-        GlobalScope.launch(Dispatchers.Main) {
-           dataSource.fetchImages("computer")
-
-        }
+//        GlobalScope.launch(Dispatchers.Main) {
+//           dataSource.fetchImages("computer", page="1")
+//        }
     }
+
+    private fun bindUI() = launch{
+        val foundImages = viewModel.images.await()
+        foundImages.observe(viewLifecycleOwner, Observer {
+            binding.textView.text = it.toString()
+        })
+    }
+
+
+
 
 }

@@ -25,7 +25,7 @@ interface PexelsApiService {
     ): PexelsResults
 
     @GET(value = "curated")
-    fun getCuratedPhotos(
+    suspend fun getCuratedPhotos(
         @Query(value = "per_page") perPage : String = "50",
         @Query(value = "page") page : String
     ) : PexelsResults

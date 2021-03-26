@@ -1,5 +1,6 @@
 package com.example.memoryfinder.data.repo
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.memoryfinder.data.PexelDao
 import com.example.memoryfinder.data.model.PexelsResults
@@ -15,8 +16,9 @@ class PexelsRepositoryImpl(
     private val pexelNetworkDS: PexelNetworkDS
 ) : PexelsRepository {
 
-    private val currentPage : String  = "1"
+    private val currentPage : String  = "0"
     private val currentKeyword : String = ""
+    private val TAG:String = "Repository"
 
     init{
         pexelNetworkDS.downloadedCurrentMemories.observeForever{ newResults ->
@@ -36,6 +38,7 @@ class PexelsRepositoryImpl(
     private suspend fun fetchLatestImages(keyword: String, page: String){
         // Find a way to check if new data is needed for reload
         if (currentKeyword == ""){
+            Log.d(TAG, "Curated Fetching")
             if(currentPage != page)
                 pexelNetworkDS.fetchCuratedImages(page = page)
         }else{

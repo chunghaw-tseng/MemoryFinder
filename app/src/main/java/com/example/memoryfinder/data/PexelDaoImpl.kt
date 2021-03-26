@@ -16,7 +16,7 @@ class PexelDaoImpl : PexelDao {
 
     override fun addImages(photos: List<Photo>){
         _pexelResults += photos
-        results.value = _pexelResults
+        results.postValue(_pexelResults)
     }
 
     override fun searchImages(photos: List<Photo>): LiveData<List<Photo>> {

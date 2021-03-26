@@ -10,6 +10,7 @@ class PexelNetworkDSImpl(
     private val pexelsApiService: PexelsApiService
 ) : PexelNetworkDS {
 
+    private val TAG : String = "Network";
     private val _downloadedCurrentMemories = MutableLiveData<PexelsResults>()
     override val downloadedCurrentMemories: LiveData<PexelsResults>
         get() = _downloadedCurrentMemories
@@ -25,6 +26,7 @@ class PexelNetworkDSImpl(
 
     override suspend fun fetchCuratedImages(per_page: String, page: String) {
         try{
+            Log.d(TAG, "Trying to fetch the photos")
             val fetchImages = pexelsApiService.getCuratedPhotos(per_page, page)
             _downloadedCurrentMemories.postValue(fetchImages)
         }catch (e: NoConnectionException){
