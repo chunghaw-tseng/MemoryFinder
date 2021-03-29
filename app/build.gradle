@@ -67,4 +67,8 @@ dependencies {
     //KodeIn
     implementation "org.kodein.di:kodein-di:$kodein_version"
     implementation("org.kodein.di:kodein-di-framework-android-x:$kodein_version")
+
+    //Glide
+    implementation "com.github.bumptech.glide:glide:4.12.0"
+
 }

@@ -16,26 +16,29 @@ class PexelsRepositoryImpl(
     private val pexelNetworkDS: PexelNetworkDS
 ) : PexelsRepository {
 
-    private val currentPage : String  = "0"
+    private val currentPage : Int  = 0
     private val currentKeyword : String = ""
     private val TAG:String = "Repository"
 
     init{
         pexelNetworkDS.downloadedCurrentMemories.observeForever{ newResults ->
+            Log.d(TAG, newResults.toString())
             persistFetchImages(newResults)
         }
     }
 
+    // TODO There needs a lot of changes
     // Might need to save this somewhere else
-    override suspend fun getCurrentImages(keyword: String, page: String): LiveData<List<Photo>> {
+    override suspend fun getCurrentImages(keyword: String, page: Int): LiveData<List<Photo>> {
         // Returns a result depending on the stuff on top
+        Log.d(TAG, "Get latest photo")
         fetchLatestImages(keyword, page)
         return withContext(Dispatchers.IO){
             return@withContext pexelDao.getImages()
         }
     }
 
-    private suspend fun fetchLatestImages(keyword: String, page: String){
+    private suspend fun fetchLatestImages(keyword: String, page: Int){
         // Find a way to check if new data is needed for reload
         if (currentKeyword == ""){
             Log.d(TAG, "Curated Fetching")
@@ -43,7 +46,7 @@ class PexelsRepositoryImpl(
                 pexelNetworkDS.fetchCuratedImages(page = page)
         }else{
             if(currentPage != page)
-                pexelNetworkDS.fetchImages("computers", page = page)
+                pexelNetworkDS.fetchImages(keyword, page = page)
         }
     }
 
