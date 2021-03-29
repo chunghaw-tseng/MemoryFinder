@@ -7,6 +7,7 @@ import com.example.memoryfinder.data.PhotoDataCache
 import com.example.memoryfinder.data.network.*
 import com.example.memoryfinder.data.provider.SearchProvider
 import com.example.memoryfinder.data.provider.SearchProviderImpl
+import com.example.memoryfinder.data.repo.PexelsRepo
 import com.example.memoryfinder.data.repo.PexelsRepository
 import com.example.memoryfinder.data.repo.PexelsRepositoryImpl
 import com.example.memoryfinder.modelviews.MemoryViewerModelFactory
@@ -19,11 +20,11 @@ class MemoryApplication : Application(), DIAware{
         import(androidXModule(this@MemoryApplication))
 
         // Main bindings for Dependency Injection
-        bind<PexelDao>() with singleton { PexelDaoImpl() }
+//        bind<PexelDao>() with singleton { PexelDaoImpl() }
         bind<Connectivity>() with singleton { ConnectivityImpl(instance()) }
         bind() from singleton { PexelsApiService(instance()) }
-        bind<PexelNetworkDS>() with singleton { PexelNetworkDSImpl(instance()) }
-        bind<PexelsRepository>() with singleton { PexelsRepositoryImpl(instance(), instance()) }
+//        bind<PexelNetworkDS>() with singleton { PexelNetworkDSImpl(instance()) }
+        bind() from singleton { PexelsRepo(instance()) }
 //        bind<SearchProvider>() with singleton { SearchProviderImpl() }
         bind() from provider { MemoryViewerModelFactory(instance()) }
     }

@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -12,20 +13,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/progress_circular"
-        android:background="@android:color/transparent"
+        android:background="@color/tranparent"
         />
 
+<!--    TODO Needs to be a fixed size or it will take too long -->
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
         android:id="@+id/fullImage"
         android:src="@mipmap/ic_launcher"
+        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="invisible"
-        android:background="@android:color/transparent"
+        android:background="@color/tranparent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

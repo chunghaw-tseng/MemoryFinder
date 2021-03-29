@@ -17,25 +17,25 @@ class MemoryViewerViewModel(
     private var TAG : String = "ViewModel"
 
 
-    fun nextPage(){
-        page += 1
-        Log.d(TAG, "Next Page")
-        GlobalScope.launch {
-            pexelsRepository.getCurrentImages(searchWord, page)
-        }
-    }
-
-    fun searchPhotos(keyword : String){
-        searchWord = keyword
-        page = 1
-        GlobalScope.launch {
-            pexelsRepository.getCurrentImages(searchWord, page)
-        }
-    }
-
-    val images by lazyDeferred {
-        pexelsRepository.getCurrentImages(searchWord, page)
-    }
+//    fun nextPage(){
+//        page += 1
+//        Log.d(TAG, "Next Page")
+//        GlobalScope.launch {
+//            pexelsRepository.getCurrentImages(searchWord, page)
+//        }
+//    }
+//
+//    fun searchPhotos(keyword : String){
+//        searchWord = keyword
+//        page = 1
+//        GlobalScope.launch {
+//            pexelsRepository.getCurrentImages(searchWord, page)
+//        }
+//    }
+//
+//    val images by lazyDeferred {
+//        pexelsRepository.getCurrentImages(searchWord, page)
+//    }
 
 
 

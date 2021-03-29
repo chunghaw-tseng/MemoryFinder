@@ -13,9 +13,9 @@ import kotlinx.coroutines.withContext
 
 class PexelsRepositoryImpl(
     private val pexelDao: PexelDao,
-    private val pexelNetworkDS: PexelNetworkDS
-) : PexelsRepository {
-
+    private val pexelNetworkDS: PexelNetworkDS)
+//) : PexelsRepository {
+{
     private val currentPage : Int  = 0
     private val currentKeyword : String = ""
     private val TAG:String = "Repository"
@@ -29,14 +29,14 @@ class PexelsRepositoryImpl(
 
     // TODO There needs a lot of changes
     // Might need to save this somewhere else
-    override suspend fun getCurrentImages(keyword: String, page: Int): LiveData<List<Photo>> {
-        // Returns a result depending on the stuff on top
-        Log.d(TAG, "Get latest photo")
-        fetchLatestImages(keyword, page)
-        return withContext(Dispatchers.IO){
-            return@withContext pexelDao.getImages()
-        }
-    }
+//    override suspend fun getCurrentImages(keyword: String, page: Int): LiveData<List<Photo>> {
+//        // Returns a result depending on the stuff on top
+//        Log.d(TAG, "Get latest photo")
+//        fetchLatestImages(keyword, page)
+//        return withContext(Dispatchers.IO){
+//            return@withContext pexelDao.getImages()
+//        }
+//    }
 
     private suspend fun fetchLatestImages(keyword: String, page: Int){
         // Find a way to check if new data is needed for reload

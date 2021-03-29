@@ -3,32 +3,38 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="200dp"
     android:layout_gravity="center"
+    android:id="@+id/mainCard"
     android:layout_margin="5dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/pexelimage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/image"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/author"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textAlignment="center" />
+        android:layout_alignBottom="@id/mainCard"
+        android:layout_gravity="bottom"
+        android:textColor="@color/white"
+        android:padding="5dp"
+        android:maxLines="1"
+        android:text="@string/app_name" />
 
+    </FrameLayout>
 
-    </LinearLayout>
 </androidx.cardview.widget.CardView>
