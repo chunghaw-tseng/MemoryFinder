@@ -1,14 +1,11 @@
 package com.example.memoryfinder.modelviews
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.memoryfinder.data.repo.PexelsRepo
 
 class MemoryViewModel(
-    private val repository: PexelsRepo
+    private val repository: PexelsRepo,
 ): ViewModel() {
     private val currentSearch = MutableLiveData(DEFAULT)
 

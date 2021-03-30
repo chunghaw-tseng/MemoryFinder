@@ -1,5 +1,6 @@
 package com.example.memoryfinder.views
 
+import android.R.attr.data
 import android.app.Dialog
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,17 +26,16 @@ import com.example.memoryfinder.R
 import com.example.memoryfinder.adapters.OnItemClickListener
 import com.example.memoryfinder.adapters.PexelLoadStateAdapter
 import com.example.memoryfinder.adapters.PexelPhotoAdapter
-import com.example.memoryfinder.adapters.RecyclerAdapter
 import com.example.memoryfinder.data.model.Photo
 import com.example.memoryfinder.databinding.MemoryViewerFragmentBinding
 import com.example.memoryfinder.modelviews.MemoryViewModel
 import com.example.memoryfinder.modelviews.MemoryViewerModelFactory
-import com.example.memoryfinder.modelviews.MemoryViewerViewModel
 import kotlinx.coroutines.*
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.closestDI
 import org.kodein.di.instance
 import kotlin.coroutines.CoroutineContext
+
 
 class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, CoroutineScope, OnItemClickListener {
 
@@ -48,7 +49,6 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
     private val TAG:String = "MainFragment"
     private var _binding: MemoryViewerFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var scrollListener : RecyclerView.OnScrollListener
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
@@ -65,20 +65,25 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
         inflater.inflate(R.menu.pexel_menu, menu)
         val searchItem = menu.findItem(R.id.searchAction)
         val searchView = searchItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if(query != null){
-                    mainrecycler.scrollToPosition(0)
-                    viewModel.searchPhotos(query)
-                    searchView.clearFocus()
+
+                if (query != null) {
+                        mainrecycler.scrollToPosition(0)
+                        viewModel.searchPhotos(query)
+                        searchView.clearFocus()
                 }
                 return true
             }
         })
+    }
+
+    private fun isAllowedText(string: String): Boolean {
+        return string.all { it.isLetter() || it.isWhitespace()}
     }
 
     override fun onCreateView(
@@ -100,28 +105,29 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
         val body = dialog.findViewById(R.id.fullImage) as ImageView
         Glide.with(this).load(photo.src.original).error(R.drawable.load_error)
             .listener(object :
-            RequestListener<Drawable> {
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                TODO("Not yet implemented")
-            }
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                Log.d(TAG, "Resource Ready")
-                progress.visibility = View.GONE
-                body.visibility = View.VISIBLE
-                return false
-            }
-        }).into(body)
+                RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d(TAG, "Resource Ready")
+                    progress.visibility = View.GONE
+                    body.visibility = View.VISIBLE
+                    return false
+                }
+            }).into(body)
         dialog.show()
 
     }
@@ -148,19 +154,17 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
         mainrecycler = binding.memoryView
 
         gridLayoutManager = GridLayoutManager(this.context, 2)
-//        setRecyclerViewScrollListener()
         val adapter = PexelPhotoAdapter(this)
 
         binding.apply {
             memoryView.setHasFixedSize(true)
             memoryView.itemAnimator = null
             memoryView.layoutManager = gridLayoutManager
-            // TODO Deal with this
             memoryView.adapter = adapter.withLoadStateHeaderAndFooter(
                 header = PexelLoadStateAdapter {
                     adapter.retry()
                 },
-                footer = PexelLoadStateAdapter{
+                footer = PexelLoadStateAdapter {
                     adapter.retry()
                 }
             )
@@ -169,7 +173,7 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
             }
         }
 
-        adapter.addLoadStateListener {  loadstate ->
+        adapter.addLoadStateListener { loadstate ->
             binding.apply {
                 progressBar.isVisible = loadstate.source.refresh is LoadState.Loading
                 memoryView.isVisible = loadstate.source.refresh is LoadState.NotLoading
@@ -194,45 +198,5 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         })
     }
-
-//    private fun setRecyclerViewScrollListener() {
-//        scrollListener = object : RecyclerView.OnScrollListener() {
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                val totalItemcount = gridLayoutManager.itemCount
-//                val lastitem = gridLayoutManager.findLastVisibleItemPosition()
-//                Log.d(TAG, totalItemcount.toString())
-//                Log.d(TAG, lastitem.toString())
-//                // Figure out how to load more
-//                if (totalItemcount <= (lastitem + 20)){
-//                    Log.d(TAG, "Load More ")
-//                    // TODO  It's loading far more than it should
-//
-//                    // Call only if it needs loading
-//
-////                    viewModel.nextPage()
-//                }
-//
-//            }
-//        }
-//        mainrecycler.addOnScrollListener(scrollListener)
-//    }
-
-    // Will have to update the UI from this call
-//    private fun bindUI() = launch{
-////        val foundImages = viewModel.currentPhotos
-//        viewModel.currentPhotos.observe(viewLifecycleOwner, Observer {
-//            if (it == null) return@Observer
-////            binding.textView.text = it.toString()
-////            Log.d(TAG, "Gotten ${it.size} images")
-////            adapter.addPhotos(it)
-////            adapter.notifyDataSetChanged()
-//            adapter.submitData(viewLifecycleOwner.lifecycle, it)
-//        })
-//    }
-
-
-
 
 }

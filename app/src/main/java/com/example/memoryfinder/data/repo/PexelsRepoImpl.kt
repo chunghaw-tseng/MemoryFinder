@@ -6,10 +6,10 @@ import androidx.paging.liveData
 import com.example.memoryfinder.data.network.PexelsApiService
 import com.example.memoryfinder.data.network.PexelsPagingSource
 
-class PexelsRepo(
+class PexelsRepoImpl (
     private val pexelsApiService: PexelsApiService
-) {
-    fun getSearchPhoto(query: String) =
+): PexelsRepo {
+    override fun getSearchPhoto(query: String) =
         Pager(
             config = PagingConfig(
                 pageSize = 20,

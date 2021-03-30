@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.memoryfinder.data.model.Photo
+import com.example.memoryfinder.utils.NoConnectionException
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -14,14 +15,11 @@ class PexelsPagingSource(
     private val query: String
 ) : PagingSource<Int, Photo> (){
 
-
     private val TAG : String = "PagingSource"
 
 
-    // TODO Error with network
-
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int? {
-        TODO("Not yet implemented")
+        return state.anchorPosition
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
@@ -45,11 +43,9 @@ class PexelsPagingSource(
                 prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
                 nextKey = if (photos.isEmpty()) null else position + 1
             )
-        } catch (exception: IOException) {
-            Log.e(TAG, "IOERROR")
+        } catch (exception: NoConnectionException) {
             LoadResult.Error(exception)
         } catch (exception: HttpException) {
-            Log.e(TAG, "HTTPERROR")
             LoadResult.Error(exception)
         }
     }

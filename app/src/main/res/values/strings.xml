@@ -3,4 +3,7 @@
     <string name="search_label">Search</string>
     <string name="search_hint">Find Images</string>
     <string name="image">Pexel Img</string>
+    <string name="retry">Retry</string>
+    <string name="no_results">No results found for this query</string>
+    <string name="result_error">Results could not be loaded</string>
 </resources>

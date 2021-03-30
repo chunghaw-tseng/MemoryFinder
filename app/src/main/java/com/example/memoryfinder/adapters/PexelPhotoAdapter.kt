@@ -53,13 +53,10 @@ class PexelPhotoAdapter(
             imgView = view.findViewById(R.id.pexelimage)
             authorText = view.findViewById(R.id.author)
             view.setOnClickListener(View.OnClickListener {
-                Log.d(TAG, "Clicked")
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION){
                     val item = getItem(position)
                     if (item != null){
-                        // Call on click
-                            Log.d(TAG, "Clicked with item")
                         listener.onitemClick(item)
                     }
                 }
@@ -68,9 +65,7 @@ class PexelPhotoAdapter(
 
         fun bind(photo: Photo) {
             authorText.text = photo.photographer
-            // TODO Show error app
-//                Glide.with(itemView).load(photo.src.small).centerCrop().error().into(imgView)
-            Glide.with(itemView).load(photo.src.small).centerCrop().error(R.drawable.load_error).into(imgView)
+            Glide.with(itemView).load(photo.src.medium).centerCrop().error(R.drawable.load_error).into(imgView)
         }
     }
 

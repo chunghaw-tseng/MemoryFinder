@@ -8,6 +8,6 @@ import com.example.memoryfinder.data.model.Photo
 
 // This is where caching should go (Save the info to a DB)
 
-interface PexelsRepository {
-    suspend fun getCurrentImages(keyword:String, page: Int) : LiveData<List<Photo>>
+interface PexelsRepo {
+    fun getSearchPhoto(query: String) : LiveData<PagingData<Photo>>
 }

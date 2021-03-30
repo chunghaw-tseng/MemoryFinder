@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">メモリファインダー</string>
+    <string name="search_label">" 検索"</string>
+    <string name="search_hint">イメージ検索</string>
+    <string name="image">イメージ</string>
+    <string name="retry">リトライ</string>
+    <string name="no_results">結果を読み込めませんでした</string>
+    <string name="result_error">結果を読み込めませんでした</string>
+</resources>
