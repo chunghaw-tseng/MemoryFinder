@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -32,16 +34,12 @@ class OfflineMemoryViewerTest {
     fun initTest() {
         val instrumentationRegistry = InstrumentationRegistry.getInstrumentation()
 
-        // TODO Need to do more tests
         if(isConnected(instrumentationRegistry.targetContext)) {
             clickAirplaneMode(
                 instrumentationRegistry,
                 instrumentationRegistry.targetContext
             )
-            returnToApp(
-                instrumentationRegistry,
-                instrumentationRegistry.targetContext
-            )
+            restartActivity()
         }
     }
 
@@ -52,15 +50,9 @@ class OfflineMemoryViewerTest {
    }
 
 
-    // TODO Test not yet finished
-    fun returnToApp(instrumentation: Instrumentation, targetContext: Context){
-        val device = UiDevice.getInstance(instrumentation)
-        device.pressHome()
-        device.pressRecentApps()
-        val appName = targetContext.getString(targetContext.applicationInfo.labelRes)
-        device.findObject(UiSelector().text(appName)).click()
+    fun restartActivity() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
     }
-
 
 
     fun clickAirplaneMode(instrumentation: Instrumentation, targetContext: Context) {
