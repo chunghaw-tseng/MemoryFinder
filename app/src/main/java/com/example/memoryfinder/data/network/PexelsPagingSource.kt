@@ -17,7 +17,6 @@ class PexelsPagingSource(
 
     private val TAG : String = "PagingSource"
 
-
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int? {
         return state.anchorPosition
     }
@@ -28,12 +27,9 @@ class PexelsPagingSource(
 
         return try {
             if (query == "curated"){
-                Log.d(TAG, "Loading curated images $position")
                 val response = pexelsApiService.getCuratedPhotos(page = position)
                 photos = response.photos
             }else {
-                // TODO this keeps getting called
-                Log.d(TAG, "Loading images $position")
                 val response = pexelsApiService.getPhotos(query, position, params.loadSize)
                 photos = response.photos
             }

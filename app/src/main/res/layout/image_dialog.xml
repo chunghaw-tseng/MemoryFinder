@@ -15,7 +15,7 @@
         android:id="@+id/progress_circular"
         android:background="@color/tranparent" />
 
-<!--    TODO Needs to be a fixed size or it will take too long -->
+<!--  Needs to be a fixed size or it will take too long -->
     <ImageView
         android:layout_width="400dp"
         android:layout_height="500dp"

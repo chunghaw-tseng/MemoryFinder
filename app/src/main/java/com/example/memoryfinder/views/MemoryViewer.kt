@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
@@ -54,6 +56,7 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
         get() = job + Dispatchers.Main
 
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         job = Job()
@@ -135,22 +138,8 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, memoryViewerModelFactory)
-            .get(MemoryViewModel::class.java)
+                .get(MemoryViewModel::class.java)
         mainrecycler = binding.memoryView
 
         gridLayoutManager = GridLayoutManager(this.context, 2)
@@ -161,12 +150,12 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
             memoryView.itemAnimator = null
             memoryView.layoutManager = gridLayoutManager
             memoryView.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = PexelLoadStateAdapter {
-                    adapter.retry()
-                },
-                footer = PexelLoadStateAdapter {
-                    adapter.retry()
-                }
+                    header = PexelLoadStateAdapter {
+                        adapter.retry()
+                    },
+                    footer = PexelLoadStateAdapter {
+                        adapter.retry()
+                    }
             )
             btnRetry.setOnClickListener{
                 adapter.retry()
@@ -197,6 +186,17 @@ class MemoryViewer : Fragment(R.layout.memory_viewer_fragment), DIAware, Corouti
             if (it == null) return@Observer
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         })
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
